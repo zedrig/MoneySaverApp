@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activity.PaginaPrincipalActivity">
+
+
+    <TextView
+        android:id="@+id/tv_saldo_actual"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="$ 0"/>
+
+    <TextView
+        android:id="@+id/tv_saldo_disponible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="@string/tv_saldo_disponible"
+        app:layout_constraintTop_toBottomOf="@id/tv_saldo_actual"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_gasto_diario"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_saldo_disponible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="$ 0"/>
+
+    <TextView
+        android:id="@+id/tv_max_diario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="@string/tv_max_diario"
+        app:layout_constraintTop_toBottomOf="@id/tv_gasto_diario"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="50dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_max_diario">
+        <ListView
+            android:id="@+id/lv_gastos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
+
+
+
+    <Button
+        android:id="@+id/bt_agregar_gasto"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="5dp"
+        android:text="@string/bt_agregar_gasto"
+        android:textAllCaps="false"
+        android:onClick="nuevoGasto"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#EF5350"
+        app:layout_constraintStart_toEndOf="@id/bt_agregar_ingreso"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bt_categorias"/>
+
+    <Button
+        android:id="@+id/bt_agregar_ingreso"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        android:text="@string/bt_agregar_ingreso"
+        android:textAllCaps="false"
+        android:onClick="nuevoIngreso"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#42A5F5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/bt_agregar_gasto"
+        app:layout_constraintBottom_toTopOf="@id/bt_categorias" />
+
+    <Button
+        android:id="@+id/bt_categorias"
+        android:layout_marginStart="10dp"
+        android:text="@string/bt_categorias"
+        android:textAllCaps="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/bt_datos"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/bt_datos"
+        android:layout_marginHorizontal="10dp"
+        android:text="@string/bt_datos"
+        android:textAllCaps="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/bt_categorias"
+        app:layout_constraintEnd_toStartOf="@id/bt_perfil"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/bt_perfil"
+        android:layout_marginEnd="10dp"
+        android:text="@string/bt_perfil"
+        android:textAllCaps="false"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/bt_datos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">MoneySaver</string>
+    <string name="tv_money_desc">tus finanzas en la palma de tu mano</string>
+    <string name="tv_money_title">MONEYSAVER</string>
+    <string name="tv_login">Iniciar sesión</string>
+    <string name="et_login">Ingrese su correo</string>
+    <string name="et_password">Ingrese su contraseña</string>
+    <string name="bt_login">Iniciar sesión</string>
+    <string name="tv_resetpass">Olvidé mi contraseña</string>
+    <string name="tv_register">¿Primera vez? Registrate aquí</string>
+    <string name="tv_registro">Registro</string>
+    <string name="et_nombre_registro">Ingrese su nombre</string>
+    <string name="bt_registro">Registrar cuenta</string>
+    <string name="tv_register_new">Ya tengo cuenta. Iniciar sesión</string>
+    <string name="item_logout">Cerrar sesión</string>
+    <string name="bt_vista_principal">Vista principal</string>
+    <string name="bt_agregar_gasto">Agregar gasto</string>
+    <string name="bt_categorias">Categorias</string>
+    <string name="bt_datos">Datos</string>
+    <string name="bt_perfil">Perfil</string>
+    <string name="tv_saldo_disponible">Saldo disponible</string>
+    <string name="tv_max_diario">Máximo a gastar hoy</string>
+    <string name="tv_nuevo_gasto">Añadir gasto</string>
+    <string name="bt_nuevo_gasto">Añadir</string>
+    <string name="tv_categorias">Seleccione la categoria</string>
+    <string name="bt_agregar_ingreso">Agregar ingreso</string>
+    <string name="tv_ingreso">Nuevo ingreso</string>
+</resources>

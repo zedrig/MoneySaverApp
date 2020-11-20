@@ -49,23 +49,31 @@ public class NuevoIngresoActivity extends AppCompatActivity {
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                double valor = Double.parseDouble(etIngreso.getText().toString());
+                String valor = etIngreso.getText().toString();
 
-                ingreso = new Ingreso(valor, auth.getUid());
+                int valorn = 0;
 
-                ingresoRepository.agregarIngreso(ingreso, new MoneyCallback<Boolean>() {
-                    @Override
-                    public void correcto(Boolean respuesta) {
-                        Toast.makeText(NuevoIngresoActivity.this, "Nuevo ingreso agregado", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
+                if (!valor.isEmpty()){
+                    valorn = Integer.parseInt(valor);
 
-                    @Override
-                    public void error(Exception exception) {
+                    ingreso = new Ingreso(valorn, auth.getUid());
 
-                    }
-                });
+                    ingresoRepository.agregarIngreso(ingreso, new MoneyCallback<Boolean>() {
+                        @Override
+                        public void correcto(Boolean respuesta) {
+                            Toast.makeText(NuevoIngresoActivity.this, "Nuevo ingreso agregado", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
 
+                        @Override
+                        public void error(Exception exception) {
+
+                        }
+                    });
+
+                }else{
+                    Toast.makeText(NuevoIngresoActivity.this, "Agregue un nuevo ingreso", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

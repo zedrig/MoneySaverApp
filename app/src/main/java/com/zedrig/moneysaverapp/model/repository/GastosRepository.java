@@ -68,6 +68,22 @@ public class GastosRepository {
     }
 
     public void escucharGasto(MoneyCallback<ArrayList<Gastos>> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error==null){
+                    lista.clear();
+                    for (DocumentSnapshot item:value.getDocuments()) {
+                        Gastos gastodoc = item.toObject(Gastos.class);
+                        Log.d("testeogastos", item.getData().toString());
+                        lista.add(gastodoc);
+                    }
+                }respuesta.correcto(lista);
+            }
+        });
+    }
+
+    public void escucharGasto5(MoneyCallback<ArrayList<Gastos>> respuesta){
         firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).limit(5).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {

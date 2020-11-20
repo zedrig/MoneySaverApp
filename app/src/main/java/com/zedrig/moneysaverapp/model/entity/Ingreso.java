@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class Ingreso implements Serializable {
 
-    public double valor;
+    public int valor;
     public String usuario_id;
 
-    public Ingreso(double valor, String usuario_id) {
+    public Ingreso(int valor, String usuario_id) {
         this.valor = valor;
         this.usuario_id = usuario_id;
     }
@@ -19,7 +19,7 @@ public class Ingreso implements Serializable {
         return valor;
     }
 
-    public void setValor(double valor) {
+    public void setValor(int valor) {
         this.valor = valor;
     }
 

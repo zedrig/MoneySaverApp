@@ -6,12 +6,12 @@ public class Gastos implements Serializable {
 
     private String fecha;
     private String categoria;
-    private double valor;
+    private int valor;
     private String descripcion;
     private String usuario_id;
     private String id;
 
-    public Gastos(String categoria, double valor, String descripcion, String usuario_id, String fecha) {
+    public Gastos(String categoria, int valor, String descripcion, String usuario_id, String fecha) {
         this.categoria = categoria;
         this.valor = valor;
         this.descripcion = descripcion;
@@ -56,7 +56,7 @@ public class Gastos implements Serializable {
         return valor;
     }
 
-    public void setValor(double valor) {
+    public void setValor(int valor) {
         this.valor = valor;
     }
 

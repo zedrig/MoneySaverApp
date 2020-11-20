@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zedrig.moneysaverapp.model.entity.Categoria;
+import com.zedrig.moneysaverapp.model.entity.Gastos;
 import com.zedrig.moneysaverapp.model.entity.Ingreso;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
 
@@ -25,6 +26,7 @@ public class UsuarioRepository {
 
     private Context context;
     private ArrayList<Categoria> lista;
+    private ArrayList<Categoria> listaingreso;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
 

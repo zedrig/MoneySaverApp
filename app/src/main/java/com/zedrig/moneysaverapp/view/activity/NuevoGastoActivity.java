@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,9 +16,11 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.zedrig.moneysaverapp.model.entity.Categoria;
 import com.zedrig.moneysaverapp.model.entity.Gastos;
+import com.zedrig.moneysaverapp.model.entity.Ingreso;
 import com.zedrig.moneysaverapp.model.repository.GastosRepository;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
 import com.zedrig.moneysaverapp.R;
+import com.zedrig.moneysaverapp.model.repository.IngresoRepository;
 import com.zedrig.moneysaverapp.model.repository.UsuarioRepository;
 
 import java.text.DateFormat;
@@ -34,8 +37,15 @@ public class NuevoGastoActivity extends AppCompatActivity {
     private EditText etDescripcion;
     private Button btGasto;
     private GastosRepository gastosRepository;
+    private IngresoRepository ingresoRepository;
     private UsuarioRepository usuarioRepository;
     private Gastos gastos;
+    private int valorfinalingreso;
+    private int valorfinalgasto;
+    private int valorfinal;
+    private int actualdia;
+    private int maxdia;
+    private int difdias;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -65,8 +75,16 @@ public class NuevoGastoActivity extends AppCompatActivity {
 
         gastosRepository = new GastosRepository(NuevoGastoActivity.this);
         usuarioRepository = new UsuarioRepository(NuevoGastoActivity.this);
+        ingresoRepository = new IngresoRepository(NuevoGastoActivity.this);
 
         asociarElementos();
+
+        mostrarGastos();
+
+        mostrarIngreso();
+
+        PaginaPrincipalActivity paginaPrincipalActivity = new PaginaPrincipalActivity();
+
 
         usuarioRepository.obtenerCategorias(new MoneyCallback<ArrayList<Categoria>>() {
             @Override
@@ -85,28 +103,39 @@ public class NuevoGastoActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 String categoria = spCategorias.getSelectedItem().toString();
-                double valor = Double.parseDouble(etGasto.getText().toString());
+                String valor = etGasto.getText().toString();
+                int valorn = 0;
                 String descripcion = etDescripcion.getText().toString();
                 String fecha = dateFormat.format(date);
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                gastos = new Gastos(categoria, valor, descripcion, auth.getUid(), fecha);
+                if (!valor.isEmpty()){
+                    valorn = Integer.parseInt(valor);
 
-                gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
-                    @Override
-                    public void correcto(Boolean respuesta) {
-                        Toast.makeText(NuevoGastoActivity.this, "gasto ingresado", Toast.LENGTH_SHORT).show();
-                        finish();
+                    if (valorn < valorfinal){
+                        gastos = new Gastos(categoria, valorn, descripcion, auth.getUid(), fecha);
+
+                        gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
+                            @Override
+                            public void correcto(Boolean respuesta) {
+                                Toast.makeText(NuevoGastoActivity.this, "Gasto ingresado", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                            @Override
+                            public void error(Exception exception) {
+                                Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else{
+                        Toast.makeText(NuevoGastoActivity.this, "Su nuevo gasto es mayor a su saldo disponible: "+valorfinal, Toast.LENGTH_SHORT).show();
                     }
 
-                    @Override
-                    public void error(Exception exception) {
-                        Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-
+                }else{
+                    Toast.makeText(NuevoGastoActivity.this, "Ingrese un nuevo gasto", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -124,10 +153,63 @@ public class NuevoGastoActivity extends AppCompatActivity {
         spCategorias.setAdapter(adapter);
     }
 
-    public int diasMes(int mes) {
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.set(Calendar.MONTH, mes - 1);
-        return gc.getActualMaximum(Calendar.DATE);
+    private int calcularTotalingreso(ArrayList<Ingreso>datos) {
+        int total = 0;
+        for (Ingreso ingreso : datos) {
+            total += ingreso.getValor();
+        }
+        return total;
+    }
+    private int calcularTotalgasto(ArrayList<Gastos>datos) {
+        int total = 0;
+        for (Gastos gastos : datos) {
+            total += gastos.getValor();
+        }
+        return total;
+    }
+    private void calcularDias(){
+        Calendar calendar = Calendar.getInstance();
+        Date date = Calendar.getInstance().getTime();
+        maxdia = calendar.getActualMaximum(Calendar.DATE);
+        DateFormat dateFormat = new SimpleDateFormat("dd");
+
+        String actualdiast = dateFormat.format(date);
+        actualdia = Integer.parseInt(actualdiast)-1;
+
+        difdias = maxdia - actualdia;
+
+        Log.d("dia de hoy: ", String.valueOf(actualdia));
+        Log.d("dia maximo: ", String.valueOf(maxdia));
+        Log.d("dia diff: ", String.valueOf(difdias));
+    }
+
+    private void mostrarIngreso(){
+        ingresoRepository.obtenerIngreso(new MoneyCallback<ArrayList<Ingreso>>() {
+            @Override
+            public void correcto(ArrayList<Ingreso> respuesta) {
+                valorfinalingreso = calcularTotalingreso(respuesta);
+                valorfinal = valorfinalingreso - valorfinalgasto;
+            }
+
+            @Override
+            public void error(Exception exception) {
+
+            }
+        });
+    }
+
+    private void mostrarGastos(){
+        gastosRepository.escucharGasto(new MoneyCallback<ArrayList<Gastos>>() {
+            @Override
+            public void correcto(ArrayList<Gastos> respuesta) {
+                valorfinalgasto = calcularTotalgasto(respuesta);
+            }
+
+            @Override
+            public void error(Exception exception) {
+
+            }
+        });
     }
 
 }

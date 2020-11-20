@@ -40,8 +40,8 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     private GastosRepository gastosRepository;
     private Ingreso ingreso;
     private Gastos gastos;
-    private double valorfinalingreso;
-    private double valorfinalgasto;
+    private int valorfinalingreso;
+    private int valorfinalgasto;
     private int valorfinal;
     private ArrayList<Gastos> lista;
     private int actualdia;
@@ -71,14 +71,6 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        mostrarIngresomax();
-
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pagina_principal);
@@ -97,9 +89,25 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
 
         mostrarGastos();
 
+        mostrarGastos5();
+
+        calcularDias();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mostrarGastos();
+
+        mostrarGastos5();
+
         mostrarIngreso();
 
-        mostrarIngresomax();
+        calcularDias();
+
 
 
     }
@@ -121,15 +129,15 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
         lvGastos = findViewById(R.id.lv_gastos);
     }
 
-    private double calcularTotalingreso(ArrayList<Ingreso>datos) {
-        double total = 0;
+    private int calcularTotalingreso(ArrayList<Ingreso>datos) {
+        int total = 0;
         for (Ingreso ingreso : datos) {
             total += ingreso.getValor();
         }
         return total;
     }
-    private double calcularTotalgasto(ArrayList<Gastos>datos) {
-        double total = 0;
+    private int calcularTotalgasto(ArrayList<Gastos>datos) {
+        int total = 0;
         for (Gastos gastos : datos) {
             total += gastos.getValor();
         }
@@ -137,12 +145,16 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     }
 
     private void mostrarIngreso(){
-        ingresoRepository.escucharIngreso(new MoneyCallback<ArrayList<Ingreso>>() {
+        ingresoRepository.obtenerIngreso(new MoneyCallback<ArrayList<Ingreso>>() {
             @Override
             public void correcto(ArrayList<Ingreso> respuesta) {
                 valorfinalingreso = calcularTotalingreso(respuesta);
-                valorfinal = (int) (valorfinalingreso - valorfinalgasto);
+                valorfinal = valorfinalingreso - valorfinalgasto;
                 tvSaldoactual.setText("$ "+valorfinal);
+
+                int gastodiario = valorfinal/difdias;
+                tvGastodiario.setText("$ "+gastodiario);
+
                 Log.d("testeofinal", String.valueOf(respuesta));
             }
 
@@ -153,12 +165,12 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
         });
     }
 
-    private void mostrarIngresomax(){
+    private void calcularDias(){
         Calendar calendar = Calendar.getInstance();
         Date date = Calendar.getInstance().getTime();
         maxdia = calendar.getActualMaximum(Calendar.DATE);
         DateFormat dateFormat = new SimpleDateFormat("dd");
-        
+
         String actualdiast = dateFormat.format(date);
         actualdia = Integer.parseInt(actualdiast)-1;
 
@@ -168,9 +180,8 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
         Log.d("dia maximo: ", String.valueOf(maxdia));
         Log.d("dia diff: ", String.valueOf(difdias));
 
-        int gastodiario = (int) (valorfinal/difdias);
-        tvGastodiario.setText("$ "+gastodiario);
-        Log.d("testeogastomaximo: ", String.valueOf(gastodiario));
+
+        //Log.d("testeogastomaximo: ", String.valueOf(gastodiario));
     }
 
     private void mostrarGastos(){
@@ -178,8 +189,21 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
             @Override
             public void correcto(ArrayList<Gastos> respuesta) {
                 valorfinalgasto = calcularTotalgasto(respuesta);
-                actualizarListado(respuesta);
                 Log.d("testeogastosfinal", String.valueOf(respuesta));
+            }
+
+            @Override
+            public void error(Exception exception) {
+
+            }
+        });
+    }
+
+    private void mostrarGastos5(){
+        gastosRepository.escucharGasto5(new MoneyCallback<ArrayList<Gastos>>() {
+            @Override
+            public void correcto(ArrayList<Gastos> respuesta) {
+                actualizarListado(respuesta);
             }
 
             @Override

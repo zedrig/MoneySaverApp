@@ -22,11 +22,17 @@ import com.zedrig.moneysaverapp.model.repository.IngresoRepository;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
 import com.zedrig.moneysaverapp.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 
 public class PaginaPrincipalActivity extends AppCompatActivity {
 
     private TextView tvSaldoactual;
+    private TextView tvGastodiario;
     private ListView lvGastos;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
@@ -34,7 +40,14 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     private GastosRepository gastosRepository;
     private Ingreso ingreso;
     private Gastos gastos;
+    private double valorfinalingreso;
+    private double valorfinalgasto;
+    private int valorfinal;
     private ArrayList<Gastos> lista;
+    private int actualdia;
+    private int maxdia;
+    private int difdias;
+
 
 
     @Override
@@ -58,20 +71,36 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        mostrarIngresomax();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pagina_principal);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //añadir botón back en la action bar
 //        setTitle("title"); //nombre del action bar
 
+
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
         ingresoRepository = new IngresoRepository(PaginaPrincipalActivity.this);
 
+        gastosRepository = new GastosRepository(PaginaPrincipalActivity.this);
+
         asociarElementos();
 
+        mostrarGastos();
+
         mostrarIngreso();
+
+        mostrarIngresomax();
+
 
     }
 
@@ -88,25 +117,33 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     private void asociarElementos() {
 
         tvSaldoactual = findViewById(R.id.tv_saldo_actual);
+        tvGastodiario = findViewById(R.id.tv_gasto_diario);
         lvGastos = findViewById(R.id.lv_gastos);
-
     }
 
-    private double calcularTotal(ArrayList<Ingreso>datos) {
+    private double calcularTotalingreso(ArrayList<Ingreso>datos) {
         double total = 0;
         for (Ingreso ingreso : datos) {
             total += ingreso.getValor();
         }
         return total;
     }
+    private double calcularTotalgasto(ArrayList<Gastos>datos) {
+        double total = 0;
+        for (Gastos gastos : datos) {
+            total += gastos.getValor();
+        }
+        return total;
+    }
 
     private void mostrarIngreso(){
-        ingresoRepository.obtenerIngreso(new MoneyCallback<ArrayList<Ingreso>>() {
+        ingresoRepository.escucharIngreso(new MoneyCallback<ArrayList<Ingreso>>() {
             @Override
             public void correcto(ArrayList<Ingreso> respuesta) {
-                double valorfinal = calcularTotal(respuesta);
+                valorfinalingreso = calcularTotalingreso(respuesta);
+                valorfinal = (int) (valorfinalingreso - valorfinalgasto);
                 tvSaldoactual.setText("$ "+valorfinal);
-                Log.d("finalnum", String.valueOf(respuesta));
+                Log.d("testeofinal", String.valueOf(respuesta));
             }
 
             @Override
@@ -116,9 +153,52 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
         });
     }
 
-//    private void actualizarListado(ArrayList<Gastos> datos){
-//        ArrayAdapter<Gastos> adapter = new ArrayAdapter<Gastos>(PaginaPrincipalActivity.this, android.R.layout.simple_list_item_1, datos);
-//
-//        lvGastos.setAdapter(adapter);
-//    }
+    private void mostrarIngresomax(){
+        Calendar calendar = Calendar.getInstance();
+        Date date = Calendar.getInstance().getTime();
+        maxdia = calendar.getActualMaximum(Calendar.DATE);
+        DateFormat dateFormat = new SimpleDateFormat("dd");
+        
+        String actualdiast = dateFormat.format(date);
+        actualdia = Integer.parseInt(actualdiast)-1;
+
+        difdias = maxdia - actualdia;
+
+        Log.d("dia de hoy: ", String.valueOf(actualdia));
+        Log.d("dia maximo: ", String.valueOf(maxdia));
+        Log.d("dia diff: ", String.valueOf(difdias));
+
+        int gastodiario = (int) (valorfinal/difdias);
+        tvGastodiario.setText("$ "+gastodiario);
+        Log.d("testeogastomaximo: ", String.valueOf(gastodiario));
+    }
+
+    private void mostrarGastos(){
+        gastosRepository.escucharGasto(new MoneyCallback<ArrayList<Gastos>>() {
+            @Override
+            public void correcto(ArrayList<Gastos> respuesta) {
+                valorfinalgasto = calcularTotalgasto(respuesta);
+                actualizarListado(respuesta);
+                Log.d("testeogastosfinal", String.valueOf(respuesta));
+            }
+
+            @Override
+            public void error(Exception exception) {
+
+            }
+        });
+    }
+
+
+    private void actualizarListado(ArrayList<Gastos> datos){
+        ArrayAdapter<Gastos> adapter = new ArrayAdapter<Gastos>(PaginaPrincipalActivity.this, android.R.layout.simple_list_item_1, datos);
+        //Collections.reverse(datos);
+        lvGastos.setAdapter(adapter);
+
+    }
+
+    public void nuevaCategoria(View view) {
+        Intent i = new Intent(PaginaPrincipalActivity.this, NuevaCategoriaActivity.class);
+        startActivity(i);
+    }
 }

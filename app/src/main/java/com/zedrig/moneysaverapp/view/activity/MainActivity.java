@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btLogin;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
+    private String correo = "";
+    private String password = "";
 
     @Override
     protected void onStart() {
@@ -48,21 +51,30 @@ public class MainActivity extends AppCompatActivity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String correo = etCorreo.getText().toString();
-                String password = etPassword.getText().toString();
+                correo = etCorreo.getText().toString();
+                password = etPassword.getText().toString();
 
-                auth.signInWithEmailAndPassword(correo, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){
-                            Intent i = new Intent(MainActivity.this,PaginaPrincipalActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                });
+                if (!correo.isEmpty() && !password.isEmpty()){
+                    loginUser();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Ingrese sus datos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+    }
+
+    private void loginUser() {
+        auth.signInWithEmailAndPassword(correo, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    Intent i = new Intent(MainActivity.this,PaginaPrincipalActivity.class);
+                    startActivity(i);
+                }
+            }
+        });
     }
 
     private void asociarElementos() {

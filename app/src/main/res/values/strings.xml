@@ -25,4 +25,5 @@
     <string name="tv_categorias">Seleccione la categoria</string>
     <string name="bt_agregar_ingreso">Agregar ingreso</string>
     <string name="tv_ingreso">Nuevo ingreso</string>
+    <string name="tv_categoria">Nueva categoria</string>
 </resources>

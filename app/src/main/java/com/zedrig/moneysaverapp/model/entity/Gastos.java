@@ -20,6 +20,14 @@ public class Gastos implements Serializable {
         this.id = "";
     }
 
+    @Override
+    public String toString() {
+        return this.categoria+" ($"+this.valor+")"+" '"+this.descripcion+"' ";
+    }
+
+    public Gastos() {
+    }
+
     public String getId() {
         return id;
     }

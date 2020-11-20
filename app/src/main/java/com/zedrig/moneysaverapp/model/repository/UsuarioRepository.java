@@ -15,30 +15,29 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.zedrig.moneysaverapp.model.entity.Gastos;
+import com.zedrig.moneysaverapp.model.entity.Categoria;
 import com.zedrig.moneysaverapp.model.entity.Ingreso;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
 
 import java.util.ArrayList;
 
-public class IngresoRepository {
+public class UsuarioRepository {
 
     private Context context;
-    private ArrayList<Ingreso> lista;
+    private ArrayList<Categoria> lista;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
-    private Ingreso ingreso;
 
-    public IngresoRepository(Context context) {
+    public UsuarioRepository(Context context) {
         this.context = context;
         this.lista = new ArrayList<>();
         this.firestore = FirebaseFirestore.getInstance();
         this.auth = FirebaseAuth.getInstance();
     }
 
-    public void agregarIngreso(Ingreso ingreso, MoneyCallback<Boolean> respuesta){
+    public void agregarCategoria(Categoria categoria, MoneyCallback<Boolean> respuesta){
 
-        firestore.collection("users").document(auth.getUid()).collection("ingreso").add(ingreso).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+        firestore.collection("users").document(auth.getUid()).collection("categoria").add(categoria).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()){
@@ -50,31 +49,32 @@ public class IngresoRepository {
         });
     }
 
-    public void obtenerIngreso(MoneyCallback<ArrayList <Ingreso>> respuesta){
-        firestore.collection("users").document(auth.getUid()).collection("ingreso").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public void obtenerCategorias(MoneyCallback<ArrayList <Categoria>> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("categoria").orderBy("nombre").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     lista.clear();
                     for (DocumentSnapshot item:task.getResult().getDocuments()) {
-                        Ingreso ingresodoc = item.toObject(Ingreso.class);
-                        Log.d("testeoingreso", item.getData().toString());
-                        lista.add(ingresodoc);
+                        Categoria categoriadoc = item.toObject(Categoria.class);
+                        Log.d("testeocategoria", item.getData().toString());
+                        lista.add(categoriadoc);
                     }
                 }respuesta.correcto(lista);
             }
         });
     }
-    public void escucharIngreso(MoneyCallback<ArrayList<Ingreso>> respuesta){
-        firestore.collection("users").document(auth.getUid()).collection("ingreso").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+    public void escucharCategorias(MoneyCallback<ArrayList<Categoria>> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("categoria").orderBy("nombre").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error==null){
                     lista.clear();
                     for (DocumentSnapshot item:value.getDocuments()) {
-                        Ingreso ingresodoc = item.toObject(Ingreso.class);
-                        Log.d("testeoingreso", item.getData().toString());
-                        lista.add(ingresodoc);
+                        Categoria categoriadoc = item.toObject(Categoria.class);
+                        Log.d("testeocategoria", item.getData().toString());
+                        lista.add(categoriadoc);
                     }
                 }respuesta.correcto(lista);
             }

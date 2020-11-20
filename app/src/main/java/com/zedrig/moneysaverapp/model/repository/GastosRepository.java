@@ -4,15 +4,20 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zedrig.moneysaverapp.model.entity.Gastos;
+import com.zedrig.moneysaverapp.model.entity.Ingreso;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
 
 import java.util.ArrayList;
@@ -20,13 +25,13 @@ import java.util.ArrayList;
 public class GastosRepository {
 
     private Context context;
-    private ArrayList<Gastos> listado;
+    private ArrayList<Gastos> lista;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
 
     public GastosRepository(Context context) {
         this.context = context;
-        this.listado = new ArrayList<>();
+        this.lista = new ArrayList<>();
         this.firestore = FirebaseFirestore.getInstance();
         this.auth = FirebaseAuth.getInstance();
 
@@ -46,22 +51,34 @@ public class GastosRepository {
         });
     }
 
-    public void obtenerGastos(final MoneyCallback<ArrayList<Gastos>> respuesta) {
-        firestore.collection("users").document(auth.getUid()).collection("gastos").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public void obtenerGasto(MoneyCallback<ArrayList <Gastos>> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).limit(5).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
-                    listado.clear();
+                    lista.clear();
                     for (DocumentSnapshot item:task.getResult().getDocuments()) {
-                        final Gastos gastos = item.toObject(Gastos.class);
-                        gastos.setId(item.getId());
-                        listado.add(gastos);
-                        Log.d("gastotest", item.getData().toString());
+                        Gastos gastodoc = item.toObject(Gastos.class);
+                        Log.d("testeogastos", item.getData().toString());
+                        lista.add(gastodoc);
                     }
-                    respuesta.correcto(listado);
-                }else{
+                }respuesta.correcto(lista);
+            }
+        });
+    }
 
-                }
+    public void escucharGasto(MoneyCallback<ArrayList<Gastos>> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).limit(5).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error==null){
+                    lista.clear();
+                    for (DocumentSnapshot item:value.getDocuments()) {
+                        Gastos gastodoc = item.toObject(Gastos.class);
+                        Log.d("testeogastos", item.getData().toString());
+                        lista.add(gastodoc);
+                    }
+                }respuesta.correcto(lista);
             }
         });
     }

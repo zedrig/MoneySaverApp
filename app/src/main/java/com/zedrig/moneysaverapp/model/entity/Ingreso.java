@@ -6,10 +6,12 @@ public class Ingreso implements Serializable {
 
     public int valor;
     public String usuario_id;
+    public String fecha;
 
-    public Ingreso(int valor, String usuario_id) {
+    public Ingreso(int valor, String usuario_id, String fecha) {
         this.valor = valor;
         this.usuario_id = usuario_id;
+        this.fecha = fecha;
     }
 
     public Ingreso() {
@@ -29,5 +31,18 @@ public class Ingreso implements Serializable {
 
     public void setUsuario_id(String usuario_id) {
         this.usuario_id = usuario_id;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    @Override
+    public String toString() {
+        return "$ "+this.valor+" - "+this.fecha;
     }
 }

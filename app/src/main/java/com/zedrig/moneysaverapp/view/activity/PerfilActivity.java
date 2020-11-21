@@ -4,14 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.zedrig.moneysaverapp.CambiarNombreActivity;
 import com.zedrig.moneysaverapp.R;
 import com.zedrig.moneysaverapp.model.entity.Usuario;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
@@ -24,7 +30,7 @@ public class PerfilActivity extends AppCompatActivity {
     private TextView tvCorreo;
     private ListView lvPerfil;
 
-    String vectorOpc [] = new String[] {"Actualizar nombre","Actualizar correo"};
+    String vectorOpc [] = new String[] {"Actualizar nombre","Actualizar correo", "Actualizar contraseña"};
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -51,13 +57,35 @@ public class PerfilActivity extends AppCompatActivity {
 
         lvPerfil.setAdapter(adaptador);
 
+        lvPerfil.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (adapterView.getItemAtPosition(i).equals("Actualizar nombre")){
+                    Intent in = new Intent(PerfilActivity.this, CambiarNombreActivity.class);
+                    startActivity(in);
+                }else{
+                    if (adapterView.getItemAtPosition(i).equals("Actualizar correo")){
+                        Intent ic = new Intent(PerfilActivity.this, CambiarCorreoActivity.class);
+                        startActivity(ic);
+                    }else{
+                        if (adapterView.getItemAtPosition(i).equals("Actualizar contraseña")){
+                            Intent ip = new Intent(PerfilActivity.this, CambiarPassActivity.class);
+                            startActivity(ip);
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mostrarNombreCorreo();
+        //mostrarNombreCorreo();
+        mostrarNombreCorreoFA();
     }
+    // PENDIENTE!! CREAR DIALOGS PARA CAMBIAR NOMBRE Y CORREO!!1
 
     private void mostrarNombreCorreo() {
         usuarioRepository.obtenerUsuario(new MoneyCallback<Usuario>() {
@@ -75,6 +103,19 @@ public class PerfilActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void mostrarNombreCorreoFA(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Name, email address, and profile photo Url
+            String name = user.getDisplayName();
+            String email = user.getEmail();
+            Uri photoUrl = user.getPhotoUrl();
+
+            tvNombre.setText(name);
+            tvCorreo.setText(email);
+        }
     }
 
     private void asociarElementos() {

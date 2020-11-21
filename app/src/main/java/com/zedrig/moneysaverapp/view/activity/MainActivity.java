@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     Intent i = new Intent(MainActivity.this,PaginaPrincipalActivity.class);
                     startActivity(i);
+                    finish();
+                }else {
+                    Toast.makeText(MainActivity.this, "Datos incorrectos", Toast.LENGTH_SHORT).show();
                 }
             }
         });

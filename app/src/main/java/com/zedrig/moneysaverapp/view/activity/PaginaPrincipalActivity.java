@@ -215,7 +215,6 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
 
     private void actualizarListado(ArrayList<Gastos> datos){
         ArrayAdapter<Gastos> adapter = new ArrayAdapter<Gastos>(PaginaPrincipalActivity.this, android.R.layout.simple_list_item_1, datos);
-        //Collections.reverse(datos);
         lvGastos.setAdapter(adapter);
 
     }
@@ -227,6 +226,11 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
 
     public void verPerfil(View view) {
         Intent i = new Intent(PaginaPrincipalActivity.this, PerfilActivity.class);
+        startActivity(i);
+    }
+
+    public void nuevoDato(View view) {
+        Intent i = new Intent(PaginaPrincipalActivity.this, DatosActivity.class);
         startActivity(i);
     }
 }

@@ -58,6 +58,9 @@ public class NuevoIngresoActivity extends AppCompatActivity {
         ingresoRepository = new IngresoRepository(NuevoIngresoActivity.this);
         gastosRepository = new GastosRepository(NuevoIngresoActivity.this);
 
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
         asociarElementos();
 
         btIngreso.setOnClickListener(new View.OnClickListener() {
@@ -67,12 +70,10 @@ public class NuevoIngresoActivity extends AppCompatActivity {
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
                 String valor = etIngreso.getText().toString();
-
                 double valorn = 0;
-
                 double valorsum = 0;
-
                 int max = Integer.MAX_VALUE;
+                String fecha = dateFormat.format(date);
 
 
                 if (!valor.isEmpty()){
@@ -83,7 +84,7 @@ public class NuevoIngresoActivity extends AppCompatActivity {
                     if (valorsum < max){
 
                         int valorf = (int) valorn;
-                        ingreso = new Ingreso(valorf, auth.getUid());
+                        ingreso = new Ingreso(valorf, auth.getUid(), fecha);
 
                         ingresoRepository.agregarIngreso(ingreso, new MoneyCallback<Boolean>() {
                             @Override

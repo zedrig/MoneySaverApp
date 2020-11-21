@@ -26,4 +26,12 @@
     <string name="bt_agregar_ingreso">Agregar ingreso</string>
     <string name="tv_ingreso">Nuevo ingreso</string>
     <string name="tv_categoria">Nueva categoria</string>
+    <string name="tv_nombre_fragment">Ingrese su nuevo nombre</string>
+    <string name="tv_datos_gastos">Gastos</string>
+    <string name="tv_datos_ingreso">Ingresos</string>
+    <string name="tv_nuevo_correo">Actualizar correo</string>
+    <string name="bt_actualizar">Actualizar</string>
+    <string name="tv_nuevo_nombre">Actualizar nombre</string>
+    <string name="tv_nueva_pass">Actualizar contraseña</string>
+    <string name="bt_eliminar_cuenta">Eliminar cuenta</string>
 </resources>

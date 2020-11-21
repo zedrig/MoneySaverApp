@@ -67,7 +67,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
         int res = calendar.getActualMaximum(Calendar.DATE);
 
         Date date = Calendar.getInstance().getTime(); // metodo para poner la hora actual
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss"); //
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); //
         DateFormat dia = new SimpleDateFormat("dd");
 
 

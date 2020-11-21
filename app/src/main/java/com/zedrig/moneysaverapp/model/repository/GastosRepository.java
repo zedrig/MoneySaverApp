@@ -52,7 +52,7 @@ public class GastosRepository {
     }
 
     public void obtenerGasto(MoneyCallback<ArrayList <Gastos>> respuesta){
-        firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).limit(5).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -95,6 +95,18 @@ public class GastosRepository {
                         lista.add(gastodoc);
                     }
                 }respuesta.correcto(lista);
+            }
+        });
+    }
+
+    public void eliminarGasto(String fecha, MoneyCallback<Boolean> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("gastos")
+                .document(fecha).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    respuesta.correcto(true);
+                }
             }
         });
     }

@@ -22,7 +22,7 @@ public class Gastos implements Serializable {
 
     @Override
     public String toString() {
-        return this.categoria+" ($"+this.valor+")"+" '"+this.descripcion+"' ";
+        return this.categoria+" [$"+this.valor+"]"+" "+this.descripcion;
     }
 
     public Gastos() {
@@ -52,7 +52,7 @@ public class Gastos implements Serializable {
         this.categoria = categoria;
     }
 
-    public double getValor() {
+    public int getValor() {
         return valor;
     }
 

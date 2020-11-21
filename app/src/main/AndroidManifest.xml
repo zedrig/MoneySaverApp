@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneySaverApp">
-        <activity android:name=".view.activity.NuevaCategoriaActivity"></activity>
+        <activity android:name=".view.activity.PerfilActivity"></activity>
+        <activity android:name=".view.activity.NuevaCategoriaActivity" />
         <activity android:name=".view.activity.NuevoIngresoActivity" />
         <activity android:name=".view.activity.NuevoGastoActivity" />
         <activity android:name=".view.activity.PaginaPrincipalActivity" />

@@ -15,9 +15,11 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.type.Money;
 import com.zedrig.moneysaverapp.model.entity.Categoria;
 import com.zedrig.moneysaverapp.model.entity.Gastos;
 import com.zedrig.moneysaverapp.model.entity.Ingreso;
+import com.zedrig.moneysaverapp.model.entity.Usuario;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
 
 import java.util.ArrayList;
@@ -79,6 +81,19 @@ public class UsuarioRepository {
                         lista.add(categoriadoc);
                     }
                 }respuesta.correcto(lista);
+            }
+        });
+    }
+
+    public void obtenerUsuario(MoneyCallback<Usuario> respuesta){
+        firestore.collection("users").document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    Usuario usuario = task.getResult().toObject(Usuario.class);
+                    respuesta.correcto(usuario);
+                    Log.d("testeousuario", String.valueOf(usuario));
+                }
             }
         });
     }

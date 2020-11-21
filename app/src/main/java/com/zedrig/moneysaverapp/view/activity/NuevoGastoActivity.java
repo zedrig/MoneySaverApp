@@ -104,35 +104,41 @@ public class NuevoGastoActivity extends AppCompatActivity {
 
                 String categoria = spCategorias.getSelectedItem().toString();
                 String valor = etGasto.getText().toString();
-                int valorn = 0;
+                double valorn = 0;
                 String descripcion = etDescripcion.getText().toString();
                 String fecha = dateFormat.format(date);
+                int max = Integer.MAX_VALUE;
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
                 if (!valor.isEmpty()){
-                    valorn = Integer.parseInt(valor);
+                    valorn = Double.parseDouble(valor);
 
                     if (valorn < valorfinal){
-                        gastos = new Gastos(categoria, valorn, descripcion, auth.getUid(), fecha);
 
-                        gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
-                            @Override
-                            public void correcto(Boolean respuesta) {
-                                Toast.makeText(NuevoGastoActivity.this, "Gasto ingresado", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
+                        if (valorn < max){
 
-                            @Override
-                            public void error(Exception exception) {
-                                Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            int valorf = (int) valorn;
+                            gastos = new Gastos(categoria, valorf, descripcion, auth.getUid(), fecha);
+
+                            gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
+                                @Override
+                                public void correcto(Boolean respuesta) {
+                                    Toast.makeText(NuevoGastoActivity.this, "Gasto ingresado", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+
+                                @Override
+                                public void error(Exception exception) {
+                                    Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }else{
+                            Toast.makeText(NuevoGastoActivity.this, "Ingrese un gasto menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                        }
                     }else{
                         Toast.makeText(NuevoGastoActivity.this, "Su nuevo gasto es mayor a su saldo disponible: "+valorfinal, Toast.LENGTH_SHORT).show();
                     }
-
-
                 }else{
                     Toast.makeText(NuevoGastoActivity.this, "Ingrese un nuevo gasto", Toast.LENGTH_SHORT).show();
                 }

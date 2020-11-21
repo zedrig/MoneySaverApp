@@ -26,7 +26,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 
 public class PaginaPrincipalActivity extends AppCompatActivity {
@@ -223,6 +222,11 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
 
     public void nuevaCategoria(View view) {
         Intent i = new Intent(PaginaPrincipalActivity.this, NuevaCategoriaActivity.class);
+        startActivity(i);
+    }
+
+    public void verPerfil(View view) {
+        Intent i = new Intent(PaginaPrincipalActivity.this, PerfilActivity.class);
         startActivity(i);
     }
 }

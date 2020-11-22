@@ -59,6 +59,7 @@ public class GastosRepository {
                     lista.clear();
                     for (DocumentSnapshot item:task.getResult().getDocuments()) {
                         Gastos gastodoc = item.toObject(Gastos.class);
+                        gastodoc.setId(item.getId());
                         Log.d("testeogastos", item.getData().toString());
                         lista.add(gastodoc);
                     }
@@ -75,6 +76,7 @@ public class GastosRepository {
                     lista.clear();
                     for (DocumentSnapshot item:value.getDocuments()) {
                         Gastos gastodoc = item.toObject(Gastos.class);
+                        gastodoc.setId(item.getId());
                         Log.d("testeogastos", item.getData().toString());
                         lista.add(gastodoc);
                     }
@@ -91,6 +93,7 @@ public class GastosRepository {
                     lista.clear();
                     for (DocumentSnapshot item:value.getDocuments()) {
                         Gastos gastodoc = item.toObject(Gastos.class);
+                        gastodoc.setId(item.getId()); //asignamos ID de firestore al ID de nuestro objeto
                         Log.d("testeogastos", item.getData().toString());
                         lista.add(gastodoc);
                     }
@@ -99,13 +102,28 @@ public class GastosRepository {
         });
     }
 
-    public void eliminarGasto(String fecha, MoneyCallback<Boolean> respuesta){
+    public void eliminarGasto(String id, MoneyCallback<Boolean> respuesta){
         firestore.collection("users").document(auth.getUid()).collection("gastos")
-                .document(fecha).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                .document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
                     respuesta.correcto(true);
+                }
+            }
+        });
+    }
+
+    public void editarGasto(Gastos gastos, MoneyCallback<Boolean> respuesta){
+
+        firestore.collection("users").document(auth.getUid()).collection("gastos")
+                .document(gastos.getId()).set(gastos).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    respuesta.correcto(true);
+                }else{
+                    respuesta.error(task.getException());
                 }
             }
         });

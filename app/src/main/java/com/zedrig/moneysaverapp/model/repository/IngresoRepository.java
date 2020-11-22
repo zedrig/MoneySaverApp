@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zedrig.moneysaverapp.model.entity.Gastos;
 import com.zedrig.moneysaverapp.model.entity.Ingreso;
@@ -51,13 +52,14 @@ public class IngresoRepository {
     }
 
     public void obtenerIngreso(MoneyCallback<ArrayList <Ingreso>> respuesta){
-        firestore.collection("users").document(auth.getUid()).collection("ingreso").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firestore.collection("users").document(auth.getUid()).collection("ingreso").orderBy("fecha", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     lista.clear();
                     for (DocumentSnapshot item:task.getResult().getDocuments()) {
                         Ingreso ingresodoc = item.toObject(Ingreso.class);
+                        ingresodoc.setId(item.getId());
                         Log.d("testeoingreso", item.getData().toString());
                         lista.add(ingresodoc);
                     }
@@ -66,17 +68,45 @@ public class IngresoRepository {
         });
     }
     public void escucharIngreso(MoneyCallback<ArrayList<Ingreso>> respuesta){
-        firestore.collection("users").document(auth.getUid()).collection("ingreso").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firestore.collection("users").document(auth.getUid()).collection("ingreso").orderBy("fecha", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error==null){
                     lista.clear();
                     for (DocumentSnapshot item:value.getDocuments()) {
                         Ingreso ingresodoc = item.toObject(Ingreso.class);
+                        ingresodoc.setId(item.getId());
                         Log.d("testeoingreso", item.getData().toString());
                         lista.add(ingresodoc);
                     }
                 }respuesta.correcto(lista);
+            }
+        });
+    }
+
+    public void eliminarIngreso(String id, MoneyCallback<Boolean> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("ingreso")
+                .document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    respuesta.correcto(true);
+                }
+            }
+        });
+    }
+
+    public void editarIngreso(Ingreso ingreso, MoneyCallback<Boolean> respuesta){
+
+        firestore.collection("users").document(auth.getUid()).collection("ingreso")
+                .document(ingreso.getId()).set(ingreso).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    respuesta.correcto(true);
+                }else{
+                    respuesta.error(task.getException());
+                }
             }
         });
     }

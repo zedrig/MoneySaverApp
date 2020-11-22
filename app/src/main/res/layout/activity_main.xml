@@ -42,7 +42,9 @@
 
         <TextView
             android:id="@+id/tv_login"
-            android:textSize="24sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
             android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,6 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp"
             android:textStyle="italic"
+            android:onClick="resetPass"
             android:text="@string/tv_resetpass"
             android:layout_marginHorizontal="40dp"
             app:layout_constraintHorizontal_bias="0"/>

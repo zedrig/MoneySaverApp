@@ -1,23 +1,22 @@
 package com.zedrig.moneysaverapp.view.activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.zedrig.moneysaverapp.CambiarNombreActivity;
 import com.zedrig.moneysaverapp.R;
 import com.zedrig.moneysaverapp.model.entity.Usuario;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
@@ -29,17 +28,31 @@ public class PerfilActivity extends AppCompatActivity {
     private TextView tvNombre;
     private TextView tvCorreo;
     private ListView lvPerfil;
+    private Button btEliminarCuenta;
+    private FirebaseAuth auth;
 
-    String vectorOpc [] = new String[] {"Actualizar nombre","Actualizar correo", "Actualizar contraseña"};
+    String vectorOpc [] = new String[] {"Actualizar nombre","Actualizar correo", "Actualizar contraseña", "Olvidé mi contraseña"};
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+            case R.id.item_logout:
+                auth.signOut();
+                Intent i = new Intent(PerfilActivity.this, MainActivity.class);
+                startActivity(i);
+                finish();
+                return true;
             case android.R.id.home:
                 finish();
                 return true;
-        }
-        return super.onOptionsItemSelected(item);
+            default:
+        }return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -50,6 +63,7 @@ public class PerfilActivity extends AppCompatActivity {
         setTitle("Perfil");
 
         usuarioRepository = new UsuarioRepository(PerfilActivity.this);
+        auth = FirebaseAuth.getInstance();
 
         asociarElementos();
 
@@ -71,13 +85,27 @@ public class PerfilActivity extends AppCompatActivity {
                         if (adapterView.getItemAtPosition(i).equals("Actualizar contraseña")){
                             Intent ip = new Intent(PerfilActivity.this, CambiarPassActivity.class);
                             startActivity(ip);
+                        }else{
+                            if (adapterView.getItemAtPosition(i).equals("Olvidé mi contraseña")){
+                                Intent io = new Intent(PerfilActivity.this, ResetPasswordActivity.class);
+                                startActivity(io);
+                            }
                         }
                     }
                 }
             }
         });
 
+        btEliminarCuenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(PerfilActivity.this, EliminarCuentaActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
+
 
     @Override
     protected void onResume() {
@@ -122,5 +150,6 @@ public class PerfilActivity extends AppCompatActivity {
         tvNombre = findViewById(R.id.tv_nombre);
         tvCorreo = findViewById(R.id.tv_correo_perfil);
         lvPerfil = findViewById(R.id.lv_perfil);
+        btEliminarCuenta = findViewById(R.id.bt_eliminar_cuenta);
     }
 }

@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.CambiarNombreActivity">
+    tools:context=".view.activity.EliminarCuentaActivity">
+
     <TextView
-        android:id="@+id/tv_nuevo_nombre"
+        android:id="@+id/tv_borrar_cuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -15,24 +16,26 @@
         android:textStyle="bold"
         android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/tv_nuevo_nombre"/>
+        android:text="@string/tv_borrar_cuenta"/>
 
     <EditText
-        android:id="@+id/et_nuevo_nombre"
+        android:id="@+id/et_borrar_cuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Ingrese su contraseña para verificación"
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="20dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_nuevo_nombre"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_borrar_cuenta"/>
 
     <Button
-        android:id="@+id/bt_nuevo_nombre"
+        android:id="@+id/bt_borrar_cuenta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:text="@string/bt_actualizar"
+        android:text="@string/bt_borrar_cuenta"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/et_nuevo_nombre"
+        app:layout_constraintTop_toBottomOf="@id/et_borrar_cuenta"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

@@ -58,20 +58,27 @@ public class CambiarPassActivity extends AppCompatActivity {
                 String passactual = etPass1.getText().toString();
                 String passnueva = etPass2.getText().toString();
 
-                AuthCredential credential = EmailAuthProvider.getCredential(email,passactual);
-                user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        user.updatePassword(passnueva).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(CambiarPassActivity.this, "Contraseña actualizada", Toast.LENGTH_SHORT).show();
-                                finish();
+                if (!passactual.isEmpty() && !passnueva.isEmpty()){
+                    AuthCredential credential = EmailAuthProvider.getCredential(email,passactual);
+                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                user.updatePassword(passnueva).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(CambiarPassActivity.this, "Contraseña actualizada", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(CambiarPassActivity.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    }
-                });
-
+                        }
+                    });
+                }else {
+                    Toast.makeText(CambiarPassActivity.this, "Complete los campos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

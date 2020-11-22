@@ -1,4 +1,4 @@
-package com.zedrig.moneysaverapp;
+package com.zedrig.moneysaverapp.view.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.zedrig.moneysaverapp.R;
 
 public class CambiarNombreActivity extends AppCompatActivity {
 
@@ -54,19 +55,24 @@ public class CambiarNombreActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 String nombrenuevo = etNombre.getText().toString();
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(nombrenuevo)
-                        .build();
 
-                user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(CambiarNombreActivity.this, "Nombre actualizado", Toast.LENGTH_SHORT).show();
-                            finish();
+                if (!nombrenuevo.isEmpty()){
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(nombrenuevo)
+                            .build();
+
+                    user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                Toast.makeText(CambiarNombreActivity.this, "Nombre actualizado", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
                         }
-                    }
-                });
+                    });
+                }else {
+                    Toast.makeText(CambiarNombreActivity.this, "Ingrese un nombre", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

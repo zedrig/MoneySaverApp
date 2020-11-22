@@ -22,7 +22,7 @@ public class Gastos implements Serializable {
 
     @Override
     public String toString() {
-        return "$ "+this.valor+" - "+this.categoria+" - "+this.fecha;
+        return "$ "+this.valor+" - "+this.categoria;
     }
 
     public Gastos() {

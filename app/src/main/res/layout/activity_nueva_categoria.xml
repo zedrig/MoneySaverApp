@@ -8,7 +8,9 @@
 
     <TextView
         android:id="@+id/tv_categoria"
-        android:textSize="24sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:textAlignment="center"
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"

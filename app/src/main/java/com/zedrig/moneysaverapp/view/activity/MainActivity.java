@@ -90,4 +90,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, RegistrarUsuarioActivity.class);
         startActivity(i);
     }
+
+    public void resetPass(View view) {
+
+        Intent i = new Intent(MainActivity.this, ResetPasswordActivity.class);
+        startActivity(i);
+
+    }
 }

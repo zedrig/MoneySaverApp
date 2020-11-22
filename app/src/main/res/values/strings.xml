@@ -34,4 +34,11 @@
     <string name="tv_nuevo_nombre">Actualizar nombre</string>
     <string name="tv_nueva_pass">Actualizar contraseña</string>
     <string name="bt_eliminar_cuenta">Eliminar cuenta</string>
+    <string name="tv_borrar_cuenta">¿Deseas eliminar tu cuenta?</string>
+    <string name="bt_borrar_cuenta">Eliminar cuenta</string>
+    <string name="tv_reset_pass_correo">Ingrese su correo</string>
+    <string name="bt_reset_pass_correo">Reestablecer contraseña</string>
+    <string name="tv_descripcion">A su correo se enviarán instrucciones para reestablecer su contraseña de manera segura.</string>
+    <string name="tv_gasto">Gastos totales</string>
+    <string name="tv_ingreso_texto">Ingresos totales</string>
 </resources>

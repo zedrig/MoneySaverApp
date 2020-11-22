@@ -5,19 +5,31 @@ import java.io.Serializable;
 public class Ingreso implements Serializable {
 
     public int valor;
+    private String id;
     public String usuario_id;
     public String fecha;
+    public String descripcion;
 
-    public Ingreso(int valor, String usuario_id, String fecha) {
+    public Ingreso(int valor, String usuario_id, String fecha, String descripcion) {
         this.valor = valor;
         this.usuario_id = usuario_id;
         this.fecha = fecha;
+        this.descripcion = descripcion;
+        this.id = "";
     }
 
     public Ingreso() {
     }
 
-    public double getValor() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getValor() {
         return valor;
     }
 
@@ -39,6 +51,14 @@ public class Ingreso implements Serializable {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     @Override

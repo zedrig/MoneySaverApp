@@ -3,12 +3,14 @@ package com.zedrig.moneysaverapp.view.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +29,9 @@ import java.util.Date;
 
 public class NuevoIngresoActivity extends AppCompatActivity {
 
+    private TextView tvIngreso;
     private EditText etIngreso;
+    private EditText etDescripcion;
     private Button btIngreso;
     private Ingreso ingreso;
     private IngresoRepository ingresoRepository;
@@ -63,55 +67,121 @@ public class NuevoIngresoActivity extends AppCompatActivity {
 
         asociarElementos();
 
-        btIngreso.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        ingreso = (Ingreso) getIntent().getSerializableExtra("ingreso");
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (ingreso == null){
 
-                String valor = etIngreso.getText().toString();
-                double valorn = 0;
-                double valorsum = 0;
-                int max = Integer.MAX_VALUE;
-                String fecha = dateFormat.format(date);
+            btIngreso.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                    String valor = etIngreso.getText().toString();
+                    String descripcion = etDescripcion.getText().toString();
+                    double valorn = 0;
+                    double valorsum = 0;
+                    int max = Integer.MAX_VALUE;
+                    String fecha = dateFormat.format(date);
 
 
-                if (!valor.isEmpty()){
-                    valorn = Double.parseDouble(valor);
+                    if (!valor.isEmpty()){
+                        valorn = Double.parseDouble(valor);
 
-                    valorsum = valorn + valorfinal;
+                        valorsum = valorn + valorfinal;
 
-                    if (valorsum < max){
+                        if (valorsum < max){
 
-                        int valorf = (int) valorn;
-                        ingreso = new Ingreso(valorf, auth.getUid(), fecha);
+                            int valorf = (int) valorn;
+                            ingreso = new Ingreso(valorf, auth.getUid(), fecha, descripcion);
 
-                        ingresoRepository.agregarIngreso(ingreso, new MoneyCallback<Boolean>() {
-                            @Override
-                            public void correcto(Boolean respuesta) {
-                                Toast.makeText(NuevoIngresoActivity.this, "Nuevo ingreso agregado", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
+                            ingresoRepository.agregarIngreso(ingreso, new MoneyCallback<Boolean>() {
+                                @Override
+                                public void correcto(Boolean respuesta) {
+                                    Toast.makeText(NuevoIngresoActivity.this, "Nuevo ingreso agregado", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
 
-                            @Override
-                            public void error(Exception exception) {
+                                @Override
+                                public void error(Exception exception) {
 
-                            }
-                        });
+                                }
+                            });
+                        }else{
+                            Toast.makeText(NuevoIngresoActivity.this, "Agregue un ingreso menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                        }
                     }else{
-                        Toast.makeText(NuevoIngresoActivity.this, "Agregue un ingreso menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NuevoIngresoActivity.this, "Agregue un nuevo ingreso", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(NuevoIngresoActivity.this, "Agregue un nuevo ingreso", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }else{
+            tvIngreso.setText("Editar Ingreso");
+            etIngreso.setText(""+ingreso.getValor());
+            etDescripcion.setText(ingreso.getDescripcion());
+            btIngreso.setText("Actualizar");
+
+            btIngreso.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                    String valor = etIngreso.getText().toString();
+                    String descripcion = etDescripcion.getText().toString();
+                    double valorn = 0;
+                    double valorsum = 0;
+                    int max = Integer.MAX_VALUE;
+                    String fecha = dateFormat.format(date);
+
+
+                    if (!valor.isEmpty()){
+                        valorn = Double.parseDouble(valor);
+
+                        valorsum = valorn + valorfinal;
+
+                        if (valorsum < max){
+
+                            int valorf = (int) valorn;
+                            ingreso.setValor(valorf);
+                            ingreso.setDescripcion(descripcion);
+
+                            ingresoRepository.editarIngreso(ingreso, new MoneyCallback<Boolean>() {
+                                @Override
+                                public void correcto(Boolean respuesta) {
+                                    Toast.makeText(NuevoIngresoActivity.this, "Nuevo ingreso agregado", Toast.LENGTH_SHORT).show();
+                                    Intent i = new Intent();
+                                    i.putExtra("ingreso", ingreso);
+                                    setResult(RESULT_OK, i);
+                                    finish();
+                                }
+
+                                @Override
+                                public void error(Exception exception) {
+
+                                }
+                            });
+                        }else{
+                            Toast.makeText(NuevoIngresoActivity.this, "Agregue un ingreso menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(NuevoIngresoActivity.this, "Agregue un nuevo ingreso", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
+
+
+
     }
 
     private void asociarElementos() {
 
+        tvIngreso = findViewById(R.id.tv_ingreso);
         etIngreso = findViewById(R.id.et_ingreso);
         btIngreso = findViewById(R.id.bt_ingreso);
+        etDescripcion = findViewById(R.id.et_descripcion_ingreso);
 
     }
 

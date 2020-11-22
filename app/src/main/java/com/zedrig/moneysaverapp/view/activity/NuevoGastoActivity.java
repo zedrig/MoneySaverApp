@@ -3,6 +3,7 @@ package com.zedrig.moneysaverapp.view.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +38,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
     private Spinner spCategorias;
     private EditText etDescripcion;
     private Button btGasto;
+    private TextView tvGasto;
     private GastosRepository gastosRepository;
     private IngresoRepository ingresoRepository;
     private UsuarioRepository usuarioRepository;
@@ -71,7 +74,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
         DateFormat dia = new SimpleDateFormat("dd");
 
 
-        gastos = (Gastos) getIntent().getSerializableExtra("gasto");
+        //gastos = (Gastos) getIntent().getSerializableExtra("gasto");
 
         gastosRepository = new GastosRepository(NuevoGastoActivity.this);
         usuarioRepository = new UsuarioRepository(NuevoGastoActivity.this);
@@ -98,52 +101,119 @@ public class NuevoGastoActivity extends AppCompatActivity {
             }
         });
 
-        btGasto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        gastos = (Gastos) getIntent().getSerializableExtra("gasto");
 
-                String categoria = spCategorias.getSelectedItem().toString();
-                String valor = etGasto.getText().toString();
-                double valorn = 0;
-                String descripcion = etDescripcion.getText().toString();
-                String fecha = dateFormat.format(date);
-                int max = Integer.MAX_VALUE;
 
-                FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (gastos == null) {
 
-                if (!valor.isEmpty()){
-                    valorn = Double.parseDouble(valor);
+            btGasto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                    if (valorn < valorfinal){
+                    String categoria = spCategorias.getSelectedItem().toString();
+                    String valor = etGasto.getText().toString();
+                    double valorn = 0;
+                    String descripcion = etDescripcion.getText().toString();
+                    String fecha = dateFormat.format(date);
+                    int max = Integer.MAX_VALUE;
 
-                        if (valorn < max){
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
 
-                            int valorf = (int) valorn;
-                            gastos = new Gastos(categoria, valorf, descripcion, auth.getUid(), fecha);
+                    if (!valor.isEmpty()){
+                        valorn = Double.parseDouble(valor);
 
-                            gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
-                                @Override
-                                public void correcto(Boolean respuesta) {
-                                    Toast.makeText(NuevoGastoActivity.this, "Gasto ingresado", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
+                        if (valorn < valorfinal){
 
-                                @Override
-                                public void error(Exception exception) {
-                                    Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            if (valorn < max){
+
+                                int valorf = (int) valorn;
+                                gastos = new Gastos(categoria, valorf, descripcion, auth.getUid(), fecha);
+
+                                gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
+                                    @Override
+                                    public void correcto(Boolean respuesta) {
+                                        Toast.makeText(NuevoGastoActivity.this, "Gasto ingresado", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void error(Exception exception) {
+                                        Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(NuevoGastoActivity.this, "Ingrese un gasto menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                            }
                         }else{
-                            Toast.makeText(NuevoGastoActivity.this, "Ingrese un gasto menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NuevoGastoActivity.this, "Su nuevo gasto es mayor a su saldo disponible: "+valorfinal, Toast.LENGTH_SHORT).show();
                         }
                     }else{
-                        Toast.makeText(NuevoGastoActivity.this, "Su nuevo gasto es mayor a su saldo disponible: "+valorfinal, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NuevoGastoActivity.this, "Ingrese un nuevo gasto", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(NuevoGastoActivity.this, "Ingrese un nuevo gasto", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }else{
+
+            tvGasto.setText("Editar gasto");
+            etGasto.setText(""+gastos.getValor());
+            etDescripcion.setText(gastos.getDescripcion());
+            btGasto.setText("Actualizar");
+
+            btGasto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    String categoria = spCategorias.getSelectedItem().toString();
+                    String valor = etGasto.getText().toString();
+                    double valorn = 0;
+                    String descripcion = etDescripcion.getText().toString();
+                    String fecha = dateFormat.format(date);
+                    int max = Integer.MAX_VALUE;
+
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+
+                    if (!valor.isEmpty()){
+                        valorn = Double.parseDouble(valor);
+
+                        if (valorn < valorfinal){
+
+                            if (valorn < max){
+
+                                int valorf = (int) valorn;
+                                gastos.setValor(valorf);
+                                gastos.setDescripcion(descripcion);
+                                gastos.setCategoria(categoria);
+
+                                gastosRepository.editarGasto(gastos, new MoneyCallback<Boolean>() {
+                                    @Override
+                                    public void correcto(Boolean respuesta) {
+                                        Toast.makeText(NuevoGastoActivity.this, "Gasto actualizado", Toast.LENGTH_SHORT).show();
+                                        Intent i = new Intent();
+                                        i.putExtra("gasto", gastos);
+                                        setResult(RESULT_OK, i);
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void error(Exception exception) {
+                                        Toast.makeText(NuevoGastoActivity.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(NuevoGastoActivity.this, "Ingrese un gasto menor a: "+max+", máximo entero permitido", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(NuevoGastoActivity.this, "Su nuevo gasto es mayor a su saldo disponible: "+valorfinal, Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(NuevoGastoActivity.this, "Ingrese un nuevo gasto", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+
+
 
     }
 
@@ -152,6 +222,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
         spCategorias = findViewById(R.id.sp_categorias);
         etDescripcion = findViewById(R.id.et_descripcion);
         btGasto = findViewById(R.id.bt_nuevo_gasto);
+        tvGasto = findViewById(R.id.tv_nuevo_gasto);
     }
 
     private void actualizarLista(ArrayList<Categoria> datos){

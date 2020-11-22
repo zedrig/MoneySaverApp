@@ -62,24 +62,32 @@ public class CambiarCorreoActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 String nuevocorreo = etCorreo.getText().toString();
-                String contraseña = etPass.getText().toString();
+                String pass = etPass.getText().toString();
 
-                AuthCredential credential = EmailAuthProvider.getCredential(email,contraseña);
-
-                user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        user.updateEmail(nuevocorreo).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(CambiarCorreoActivity.this, "Correo actualizado", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
+                if (!nuevocorreo.isEmpty() && !pass.isEmpty()){
+                    AuthCredential credential = EmailAuthProvider.getCredential(email,pass);
+                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                user.updateEmail(nuevocorreo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(CambiarCorreoActivity.this, "Correo actualizado", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(CambiarCorreoActivity.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
                             }
-                        });
-                    }
-                });
+
+                        }
+                    });
+                }else{
+                    Toast.makeText(CambiarCorreoActivity.this, "Complete los campos", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

@@ -82,7 +82,19 @@ public class RegistrarUsuarioActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
-                                            finish();
+                                            Categoria categoria = new Categoria("Gastos varios", auth.getUid());
+                                            usuarioRepository.agregarCategoria(categoria, new MoneyCallback<Boolean>() {
+                                                @Override
+                                                public void correcto(Boolean respuesta) {
+                                                    finish();
+                                                }
+
+                                                @Override
+                                                public void error(Exception exception) {
+
+                                                }
+                                            });
+
                                         }else{
 
                                         }

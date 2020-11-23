@@ -19,7 +19,9 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.zedrig.moneysaverapp.R;
+import com.zedrig.moneysaverapp.model.entity.Usuario;
 
 public class CambiarCorreoActivity extends AppCompatActivity {
 
@@ -28,6 +30,8 @@ public class CambiarCorreoActivity extends AppCompatActivity {
     private Button btCorreo;
     private String email;
     private FirebaseUser user;
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -48,6 +52,8 @@ public class CambiarCorreoActivity extends AppCompatActivity {
         etCorreo = findViewById(R.id.et_nuevo_correo);
         etPass = findViewById(R.id.et_pass_check);
         btCorreo = findViewById(R.id.bt_nuevo_correo);
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -74,8 +80,15 @@ public class CambiarCorreoActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
-                                            Toast.makeText(CambiarCorreoActivity.this, "Correo actualizado", Toast.LENGTH_SHORT).show();
-                                            finish();
+                                            String nombre = user.getDisplayName();
+                                            Usuario usuario = new Usuario(nombre,nuevocorreo);
+                                            firestore.collection("users").document(auth.getUid()).set(usuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Toast.makeText(CambiarCorreoActivity.this, "Correo actualizado", Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+                                            });
                                         }
                                     }
                                 });

@@ -20,6 +20,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zedrig.moneysaverapp.R;
+import com.zedrig.moneysaverapp.model.network.MoneyCallback;
+import com.zedrig.moneysaverapp.model.repository.UsuarioRepository;
 
 public class EliminarCuentaActivity extends AppCompatActivity {
 
@@ -27,6 +29,8 @@ public class EliminarCuentaActivity extends AppCompatActivity {
     private Button btBorrar;
     private FirebaseUser user;
     private String email;
+    private UsuarioRepository usuarioRepository;
+    private FirebaseAuth auth;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -46,7 +50,8 @@ public class EliminarCuentaActivity extends AppCompatActivity {
 
         etBorrar = findViewById(R.id.et_borrar_cuenta);
         btBorrar = findViewById(R.id.bt_borrar_cuenta);
-
+        usuarioRepository = new UsuarioRepository(EliminarCuentaActivity.this);
+        auth = FirebaseAuth.getInstance();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -73,15 +78,23 @@ public class EliminarCuentaActivity extends AppCompatActivity {
                                         .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                usuarioRepository.eliminarUsuario(auth.getUid(), new MoneyCallback<Boolean>() {
                                                     @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()){
-                                                            Intent i = new Intent(EliminarCuentaActivity.this, MainActivity.class);
-                                                            startActivity(i);
-                                                            Toast.makeText(EliminarCuentaActivity.this, "Su cuenta se ha eliminado satisfactoriamente", Toast.LENGTH_SHORT).show();
-                                                            finish();
-                                                        }
+                                                    public void correcto(Boolean respuesta) {
+                                                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                Intent i = new Intent(EliminarCuentaActivity.this, MainActivity.class);
+                                                                startActivity(i);
+                                                                Toast.makeText(EliminarCuentaActivity.this, "Su cuenta se ha eliminado satisfactoriamente", Toast.LENGTH_SHORT).show();
+                                                                finish();
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void error(Exception exception) {
+
                                                     }
                                                 });
                                             }

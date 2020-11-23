@@ -15,13 +15,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.zedrig.moneysaverapp.R;
+import com.zedrig.moneysaverapp.model.entity.Usuario;
 
 public class CambiarNombreActivity extends AppCompatActivity {
 
     private EditText etNombre;
     private Button btNombre;
     private FirebaseUser user;
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -41,6 +45,8 @@ public class CambiarNombreActivity extends AppCompatActivity {
 
         etNombre = findViewById(R.id.et_nuevo_nombre);
         btNombre = findViewById(R.id.bt_nuevo_nombre);
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -65,8 +71,15 @@ public class CambiarNombreActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-                                Toast.makeText(CambiarNombreActivity.this, "Nombre actualizado", Toast.LENGTH_SHORT).show();
-                                finish();
+                                String correo = user.getEmail();
+                                Usuario usuario = new Usuario(nombrenuevo,correo);
+                                firestore.collection("users").document(auth.getUid()).set(usuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(CambiarNombreActivity.this, "Nombre actualizado", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
                             }
                         }
                     });

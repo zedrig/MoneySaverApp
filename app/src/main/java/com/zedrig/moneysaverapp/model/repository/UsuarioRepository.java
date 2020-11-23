@@ -103,6 +103,17 @@ public class UsuarioRepository {
         });
     }
 
+    public void eliminarUsuario(String id, MoneyCallback<Boolean> respuesta){
+        firestore.collection("users").document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    respuesta.correcto(true);
+                }
+            }
+        });
+    }
+
     public void eliminarCategoria(String id, MoneyCallback<Boolean> respuesta){
         firestore.collection("users").document(auth.getUid()).collection("categoria")
                 .document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {

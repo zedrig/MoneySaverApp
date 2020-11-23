@@ -40,6 +40,7 @@
         android:ems="7"
         android:inputType="number"
         android:textSize="30sp"
+        android:maxLength="10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_peso_ingreso"

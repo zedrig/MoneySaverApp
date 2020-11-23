@@ -16,7 +16,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.zedrig.moneysaverapp.R;
+import com.zedrig.moneysaverapp.model.entity.Categoria;
 import com.zedrig.moneysaverapp.model.entity.Usuario;
+import com.zedrig.moneysaverapp.model.network.MoneyCallback;
+import com.zedrig.moneysaverapp.model.repository.UsuarioRepository;
 
 public class RegistrarUsuarioActivity extends AppCompatActivity {
 
@@ -26,6 +29,7 @@ public class RegistrarUsuarioActivity extends AppCompatActivity {
     private EditText etPass2;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class RegistrarUsuarioActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        usuarioRepository = new UsuarioRepository(RegistrarUsuarioActivity.this);
 
     }
 
@@ -69,7 +74,6 @@ public class RegistrarUsuarioActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()){
-
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(nombre).build();
                                 user.updateProfile(profileUpdates);

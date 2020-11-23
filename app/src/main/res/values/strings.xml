@@ -41,4 +41,5 @@
     <string name="tv_descripcion">A su correo se enviarán instrucciones para reestablecer su contraseña de manera segura.</string>
     <string name="tv_gasto">Gastos totales</string>
     <string name="tv_ingreso_texto">Ingresos totales</string>
+    <string name="tv_lista_cat">Gastos por categoria</string>
 </resources>

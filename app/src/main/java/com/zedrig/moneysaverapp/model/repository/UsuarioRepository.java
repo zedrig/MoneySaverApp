@@ -64,6 +64,7 @@ public class UsuarioRepository {
                     lista.clear();
                     for (DocumentSnapshot item:task.getResult().getDocuments()) {
                         Categoria categoriadoc = item.toObject(Categoria.class);
+                        categoriadoc.setId(item.getId());
                         Log.d("testeocategoria", item.getData().toString());
                         lista.add(categoriadoc);
                     }
@@ -80,6 +81,7 @@ public class UsuarioRepository {
                     lista.clear();
                     for (DocumentSnapshot item:value.getDocuments()) {
                         Categoria categoriadoc = item.toObject(Categoria.class);
+                        categoriadoc.setId(item.getId());
                         Log.d("testeocategoria", item.getData().toString());
                         lista.add(categoriadoc);
                     }
@@ -96,6 +98,18 @@ public class UsuarioRepository {
                     Usuario usuario = task.getResult().toObject(Usuario.class);
                     respuesta.correcto(usuario);
                     Log.d("testeousuario", String.valueOf(usuario));
+                }
+            }
+        });
+    }
+
+    public void eliminarCategoria(String id, MoneyCallback<Boolean> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("categoria")
+                .document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    respuesta.correcto(true);
                 }
             }
         });

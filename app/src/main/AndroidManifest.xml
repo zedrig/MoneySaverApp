@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MoneySaverApp">
-        <activity android:name=".view.activity.ResetPasswordActivity"></activity>
+        <activity android:name=".view.activity.ListaCategoriaActivity"></activity>
+        <activity android:name=".view.activity.ResetPasswordActivity" />
         <activity android:name=".view.activity.EliminarCuentaActivity" />
         <activity android:name=".view.activity.CambiarPassActivity" />
         <activity android:name=".view.activity.CambiarNombreActivity" />

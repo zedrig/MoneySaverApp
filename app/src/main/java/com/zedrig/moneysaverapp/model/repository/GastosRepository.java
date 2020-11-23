@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.zedrig.moneysaverapp.model.entity.Categoria;
 import com.zedrig.moneysaverapp.model.entity.Gastos;
 import com.zedrig.moneysaverapp.model.entity.Ingreso;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
@@ -128,4 +129,25 @@ public class GastosRepository {
             }
         });
     }
+
+    public void obtenerGastocat(String categoria, MoneyCallback<ArrayList <Gastos>> respuesta){
+
+        firestore.collection("users").document(auth.getUid())
+                .collection("gastos").whereEqualTo("categoria", categoria)
+                .orderBy("fecha", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    lista.clear();
+                    for (DocumentSnapshot item:task.getResult().getDocuments()) {
+                        Gastos gastodoc = item.toObject(Gastos.class);
+                        gastodoc.setId(item.getId());
+                        Log.d("testeocats", item.getData().toString());
+                        lista.add(gastodoc);
+                    }
+                }respuesta.correcto(lista);
+            }
+        });
+    }
+
 }

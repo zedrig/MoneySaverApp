@@ -1,16 +1,28 @@
 package com.zedrig.moneysaverapp.model.entity;
 
-public class Categoria {
+import java.io.Serializable;
 
+public class Categoria implements Serializable {
+
+    public String id;
     public String nombre;
     public String usuario_id;
 
     public Categoria(String nombre, String usuario_id) {
         this.nombre = nombre;
         this.usuario_id = usuario_id;
+        this.id = "";
     }
 
     public Categoria() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNombre() {

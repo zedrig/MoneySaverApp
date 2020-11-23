@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import com.zedrig.moneysaverapp.R;
 import com.zedrig.moneysaverapp.model.entity.Categoria;
 import com.zedrig.moneysaverapp.model.entity.Gastos;
 import com.zedrig.moneysaverapp.model.network.MoneyCallback;
+import com.zedrig.moneysaverapp.model.repository.GastosRepository;
 import com.zedrig.moneysaverapp.model.repository.UsuarioRepository;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class NuevaCategoriaActivity extends AppCompatActivity {
     private ListView lvCategoria;
     private Categoria categoria;
     private UsuarioRepository usuarioRepository;
+    private GastosRepository gastosRepository;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -50,6 +53,7 @@ public class NuevaCategoriaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         usuarioRepository = new UsuarioRepository(NuevaCategoriaActivity.this);
+        gastosRepository = new GastosRepository(NuevaCategoriaActivity.this);
 
         asociarElementos();
 
@@ -98,10 +102,26 @@ public class NuevaCategoriaActivity extends AppCompatActivity {
                         .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                usuarioRepository.eliminarCategoria(categoria.getId(), new MoneyCallback<Boolean>() {
+
+                                gastosRepository.obtenerGastocat(categoria.getNombre(), new MoneyCallback<ArrayList<Gastos>>() {
                                     @Override
-                                    public void correcto(Boolean respuesta) {
-                                        Toast.makeText(NuevaCategoriaActivity.this, "Categoria eliminada", Toast.LENGTH_SHORT).show();
+                                    public void correcto(ArrayList<Gastos> respuesta) {
+                                        Log.d("arraygasto", respuesta.toString());
+                                        if (respuesta.isEmpty()){
+                                            usuarioRepository.eliminarCategoria(categoria.getId(), new MoneyCallback<Boolean>() {
+                                                @Override
+                                                public void correcto(Boolean respuesta) {
+                                                    Toast.makeText(NuevaCategoriaActivity.this, "Categoria eliminada", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                @Override
+                                                public void error(Exception exception) {
+
+                                                }
+                                            });
+                                        }else {
+                                            Toast.makeText(NuevaCategoriaActivity.this, "Existen gastos con esta categoria, no se puede eliminar", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
 
                                     @Override
@@ -109,6 +129,8 @@ public class NuevaCategoriaActivity extends AppCompatActivity {
 
                                     }
                                 });
+
+
                             }
                         });
                 AlertDialog dialog = builder.create();

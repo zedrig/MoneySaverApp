@@ -1,12 +1,16 @@
 package com.zedrig.moneysaverapp.view.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.zedrig.moneysaverapp.R;
@@ -46,6 +50,55 @@ public class ListaCategoriaActivity extends AppCompatActivity {
 
         categoria = (Categoria) getIntent().getSerializableExtra("categoria");
 
+        mostrarGastoscat();
+
+
+        lvListaCat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Gastos gastos = (Gastos) lvListaCat.getAdapter().getItem(i);
+                Intent ig = new Intent(ListaCategoriaActivity.this, NuevoGastoActivity.class);
+                ig.putExtra("gasto", gastos);
+                startActivityForResult(ig, 100);
+            }
+        });
+
+        lvListaCat.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Gastos gastos = (Gastos) lvListaCat.getAdapter().getItem(i);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ListaCategoriaActivity.this);
+                builder.setTitle("Eliminar gasto")
+                        .setMessage("¿Quieres eliminar este gasto de: $ "+gastos.getValor()+"?")
+                        .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                gastosRepository.eliminarGasto(gastos.getId(), new MoneyCallback<Boolean>() {
+                                    @Override
+                                    public void correcto(Boolean respuesta) {
+                                        mostrarGastoscat();
+                                    }
+
+                                    @Override
+                                    public void error(Exception exception) {
+
+                                    }
+                                });
+                            }
+                        }).setNegativeButton("Cancelar", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+            }
+        });
+
+
+    }
+
+    private void mostrarGastoscat() {
         gastosRepository.obtenerGastocat(categoria.getNombre(), new MoneyCallback<ArrayList<Gastos>>() {
             @Override
             public void correcto(ArrayList<Gastos> respuesta) {
@@ -61,13 +114,13 @@ public class ListaCategoriaActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
+
     private void actualizarListadoGasto(ArrayList<Gastos> datos){
 
         GastoAdatador gastoAdatador = new GastoAdatador(this, datos);
         lvListaCat.setAdapter(gastoAdatador);
 
     }
+
 }

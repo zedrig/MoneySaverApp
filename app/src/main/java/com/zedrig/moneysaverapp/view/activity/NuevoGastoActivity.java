@@ -111,7 +111,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     
                     String valor = etGasto.getText().toString();
-                    int valorn = 0;
+                    double valorn = 0;
                     String descripcion = etDescripcion.getText().toString();
                     String fecha = dateFormat.format(date);
                     int max = Integer.MAX_VALUE;
@@ -120,7 +120,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
                     FirebaseAuth auth = FirebaseAuth.getInstance();
 
                     if (!valor.isEmpty()){
-                        valorn = Integer.parseInt(valor);
+                        valorn = Double.parseDouble(valor);
                         
                         if (spinnersize != 0){
                             String categoria = spCategorias.getSelectedItem().toString();
@@ -172,7 +172,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
                 public void onClick(View view) {
 
                     String valor = etGasto.getText().toString();
-                    int valorn = 0;
+                    double valorn = 0;
                     String descripcion = etDescripcion.getText().toString();
                     String fecha = dateFormat.format(date);
                     int max = Integer.MAX_VALUE;
@@ -182,7 +182,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
                     FirebaseAuth auth = FirebaseAuth.getInstance();
 
                     if (!valor.isEmpty()){
-                        valorn = Integer.parseInt(valor);
+                        valorn = Double.parseDouble(valor);
                         int valorfinalaux = (int) (valorn + valorfinal);
 
                         if (spinnersize != 0){

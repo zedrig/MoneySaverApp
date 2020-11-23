@@ -49,25 +49,25 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
 
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.item_logout:
-                auth.signOut();
-                Intent i = new Intent(PaginaPrincipalActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//
+//        switch (item.getItemId()){
+//            case R.id.item_logout:
+//                auth.signOut();
+//                Intent i = new Intent(PaginaPrincipalActivity.this, MainActivity.class);
+//                startActivity(i);
+//                finish();
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

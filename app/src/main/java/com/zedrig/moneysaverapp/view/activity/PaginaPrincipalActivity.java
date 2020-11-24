@@ -166,8 +166,8 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
 
     private void calcularDias(){
         Calendar calendar = Calendar.getInstance();
+        maxdia = calendar.getActualMaximum(Calendar.DATE); //ultimo dia del mes
         Date date = Calendar.getInstance().getTime();
-        maxdia = calendar.getActualMaximum(Calendar.DATE);
         DateFormat dateFormat = new SimpleDateFormat("dd");
 
         String actualdiast = dateFormat.format(date);

@@ -19,7 +19,7 @@
     <string name="bt_datos">Datos</string>
     <string name="bt_perfil">Perfil</string>
     <string name="tv_saldo_disponible">Saldo disponible </string>
-    <string name="tv_max_diario">Máximo a gastar hoy </string>
+    <string name="tv_max_diario">Máximo recomendado a gastar hoy </string>
     <string name="tv_nuevo_gasto">Añadir gasto</string>
     <string name="bt_nuevo_gasto">Añadir</string>
     <string name="tv_categorias">Seleccione la categoria</string>
@@ -42,4 +42,5 @@
     <string name="tv_gasto">Gastos totales</string>
     <string name="tv_ingreso_texto">Ingresos totales</string>
     <string name="tv_lista_cat">Gastos por categoria</string>
+    <string name="item_about">Acerca de</string>
 </resources>

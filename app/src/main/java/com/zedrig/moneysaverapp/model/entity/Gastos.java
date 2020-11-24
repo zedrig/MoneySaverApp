@@ -5,19 +5,25 @@ import java.io.Serializable;
 public class Gastos implements Serializable {
 
     private String fecha;
+    private String year;
+    private String mes;
+    private String dia;
     private String categoria;
     private int valor;
     private String descripcion;
     private String usuario_id;
     private String id;
 
-    public Gastos(String categoria, int valor, String descripcion, String usuario_id, String fecha) {
+    public Gastos(String categoria, int valor, String descripcion, String usuario_id, String fecha, String year, String mes, String dia) {
         this.categoria = categoria;
         this.valor = valor;
         this.descripcion = descripcion;
         this.usuario_id = usuario_id;
         this.fecha = fecha;
         this.id = "";
+        this.year = year;
+        this.mes = mes;
+        this.dia = dia;
     }
 
     @Override
@@ -26,6 +32,30 @@ public class Gastos implements Serializable {
     }
 
     public Gastos() {
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMes() {
+        return mes;
+    }
+
+    public void setMes(String mes) {
+        this.mes = mes;
+    }
+
+    public String getDia() {
+        return dia;
+    }
+
+    public void setDia(String dia) {
+        this.dia = dia;
     }
 
     public String getId() {

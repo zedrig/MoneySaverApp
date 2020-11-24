@@ -48,6 +48,10 @@ public class PerfilActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
                 return true;
+            case R.id.item_about:
+                Intent ia = new Intent(PerfilActivity.this, AboutActivity.class);
+                startActivity(ia);
+                return true;
             case android.R.id.home:
                 finish();
                 return true;

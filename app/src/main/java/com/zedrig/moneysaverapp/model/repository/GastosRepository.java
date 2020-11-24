@@ -69,6 +69,25 @@ public class GastosRepository {
         });
     }
 
+    public void obtenerGastohoy(String dia, String mes, String year, MoneyCallback<ArrayList<Gastos>> respuesta){
+        firestore.collection("users").document(auth.getUid()).collection("gastos")
+                .whereEqualTo("dia", dia).whereEqualTo("mes", mes).whereEqualTo("year", year)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {//REVISAR ESTO!!!
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    lista.clear();
+                    for (DocumentSnapshot item:task.getResult().getDocuments()) {
+                        Gastos gastodoc = item.toObject(Gastos.class);
+                        gastodoc.setId(item.getId());
+                        Log.d("testeogastos", item.getData().toString());
+                        lista.add(gastodoc);
+                    }
+                }respuesta.correcto(lista);
+            }
+        });
+    }
+
     public void escucharGasto(MoneyCallback<ArrayList<Gastos>> respuesta){
         firestore.collection("users").document(auth.getUid()).collection("gastos").orderBy("fecha", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

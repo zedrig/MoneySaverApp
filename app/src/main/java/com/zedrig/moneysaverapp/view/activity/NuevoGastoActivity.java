@@ -69,12 +69,13 @@ public class NuevoGastoActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         int res = calendar.getActualMaximum(Calendar.DATE);
 
-        Date date = Calendar.getInstance().getTime(); // metodo para poner la hora actual
+        Date date = Calendar.getInstance().getTime();// metodo para poner la hora actual
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); //
         DateFormat dia = new SimpleDateFormat("dd");
+        DateFormat mes = new SimpleDateFormat("MM");
+        DateFormat anio = new SimpleDateFormat("yyyy");
 
 
-        //gastos = (Gastos) getIntent().getSerializableExtra("gasto");
 
         gastosRepository = new GastosRepository(NuevoGastoActivity.this);
         usuarioRepository = new UsuarioRepository(NuevoGastoActivity.this);
@@ -85,8 +86,6 @@ public class NuevoGastoActivity extends AppCompatActivity {
         mostrarGastos();
 
         mostrarIngreso();
-
-        PaginaPrincipalActivity paginaPrincipalActivity = new PaginaPrincipalActivity();
 
 
         usuarioRepository.obtenerCategorias(new MoneyCallback<ArrayList<Categoria>>() {
@@ -114,6 +113,9 @@ public class NuevoGastoActivity extends AppCompatActivity {
                     double valorn = 0;
                     String descripcion = etDescripcion.getText().toString();
                     String fecha = dateFormat.format(date);
+                    String day = dia.format(date);
+                    String month = mes.format(date);
+                    String year = anio.format(date);
                     int max = Integer.MAX_VALUE;
                     int spinnersize = spCategorias.getAdapter().getCount();
 
@@ -130,7 +132,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
                                 if (valorn < max){
 
                                     int valorf = (int) valorn;
-                                    gastos = new Gastos(categoria, valorf, descripcion, auth.getUid(), fecha);
+                                    gastos = new Gastos(categoria, valorf, descripcion, auth.getUid(), fecha, year, month, day);
 
                                     gastosRepository.agregarGasto(gastos, new MoneyCallback<Boolean>() {
                                         @Override
@@ -253,28 +255,29 @@ public class NuevoGastoActivity extends AppCompatActivity {
         }
         return total;
     }
-    private int calcularTotalgasto(ArrayList<Gastos>datos) {
+    private int calcularTotalgasto(ArrayList<Gastos> datos) {
         int total = 0;
         for (Gastos gastos : datos) {
             total += gastos.getValor();
         }
         return total;
     }
-    private void calcularDias(){
-        Calendar calendar = Calendar.getInstance();
-        Date date = Calendar.getInstance().getTime();
-        maxdia = calendar.getActualMaximum(Calendar.DATE);
-        DateFormat dateFormat = new SimpleDateFormat("dd");
 
-        String actualdiast = dateFormat.format(date);
-        actualdia = Integer.parseInt(actualdiast)-1;
-
-        difdias = maxdia - actualdia;
-
-        Log.d("dia de hoy: ", String.valueOf(actualdia));
-        Log.d("dia maximo: ", String.valueOf(maxdia));
-        Log.d("dia diff: ", String.valueOf(difdias));
-    }
+//    private void calcularDias(){
+//        Calendar calendar = Calendar.getInstance();
+//        Date date = Calendar.getInstance().getTime();
+//        maxdia = calendar.getActualMaximum(Calendar.DATE);
+//        DateFormat dateFormat = new SimpleDateFormat("dd");
+//
+//        String actualdiast = dateFormat.format(date);
+//        actualdia = Integer.parseInt(actualdiast)-1;
+//
+//        difdias = maxdia - actualdia;
+//
+//        Log.d("dia de hoy: ", String.valueOf(actualdia));
+//        Log.d("dia maximo: ", String.valueOf(maxdia));
+//        Log.d("dia diff: ", String.valueOf(difdias));
+//    }
 
     private void mostrarIngreso(){
         ingresoRepository.obtenerIngreso(new MoneyCallback<ArrayList<Ingreso>>() {

@@ -271,7 +271,7 @@ public class NuevoGastoActivity extends AppCompatActivity {
 //
 //        String actualdiast = dateFormat.format(date);
 //        actualdia = Integer.parseInt(actualdiast)-1;
-//
+//        //dias restantes del mes
 //        difdias = maxdia - actualdia;
 //
 //        Log.d("dia de hoy: ", String.valueOf(actualdia));

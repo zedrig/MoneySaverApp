@@ -48,33 +48,10 @@ public class PaginaPrincipalActivity extends AppCompatActivity {
     private int difdias;
 
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//
-//        switch (item.getItemId()){
-//            case R.id.item_logout:
-//                auth.signOut();
-//                Intent i = new Intent(PaginaPrincipalActivity.this, MainActivity.class);
-//                startActivity(i);
-//                finish();
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pagina_principal);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //añadir botón back en la action bar
-//        setTitle("title"); //nombre del action bar
 
 
         auth = FirebaseAuth.getInstance();

@@ -117,7 +117,6 @@ public class PerfilActivity extends AppCompatActivity {
         //mostrarNombreCorreo();
         mostrarNombreCorreoFA();
     }
-    // PENDIENTE!! CREAR DIALOGS PARA CAMBIAR NOMBRE Y CORREO!!1
 
     private void mostrarNombreCorreo() {
         usuarioRepository.obtenerUsuario(new MoneyCallback<Usuario>() {
@@ -137,13 +136,12 @@ public class PerfilActivity extends AppCompatActivity {
         });
     }
 
+    //sacar datos directo de firebaseauth
     private void mostrarNombreCorreoFA(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            // Name, email address, and profile photo Url
             String name = user.getDisplayName();
             String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
 
             tvNombre.setText(name);
             tvCorreo.setText(email);

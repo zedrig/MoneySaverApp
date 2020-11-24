@@ -69,6 +69,7 @@ public class GastosRepository {
         });
     }
 
+    // not being used yet
     public void obtenerGastohoy(String dia, String mes, String year, MoneyCallback<ArrayList<Gastos>> respuesta){
         firestore.collection("users").document(auth.getUid()).collection("gastos")
                 .whereEqualTo("dia", dia).whereEqualTo("mes", mes).whereEqualTo("year", year)
@@ -149,6 +150,7 @@ public class GastosRepository {
         });
     }
 
+    //obtener los gastos que tenga la categoria seleccionada
     public void obtenerGastocat(String categoria, MoneyCallback<ArrayList <Gastos>> respuesta){
 
         firestore.collection("users").document(auth.getUid())

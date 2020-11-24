@@ -5,9 +5,11 @@ import java.io.Serializable;
 public class Gastos implements Serializable {
 
     private String fecha;
+    //3 variables for future features
     private String year;
     private String mes;
     private String dia;
+    //
     private String categoria;
     private int valor;
     private String descripcion;
